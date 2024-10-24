@@ -18,7 +18,7 @@ Este proyecto es un sistema de gestión de clientes desarrollado en ASP.NET (VB.
 
 ## Instalación
 1. Clonar el repositorio:
--git clone https://github.com/JuanReneB/PruebaFundamicro.git
+git clone https://github.com/JuanReneB/PruebaFundamicro.git
 2. Configurar la cadena de conexión en `web.config` para apuntar a su instancia de SQL Server.
 3. Ejecutar la migración de la base de datos.
 

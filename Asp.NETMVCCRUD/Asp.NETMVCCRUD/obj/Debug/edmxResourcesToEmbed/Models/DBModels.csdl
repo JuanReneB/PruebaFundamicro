@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MvcCRUDDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="DBModel" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Clientes1" EntityType="MvcCRUDDBModel.Clientes" />
+    <EntitySet Name="usuarios1" EntityType="MvcCRUDDBModel.usuarios" />
+    <EntitySet Name="AuditoriaClientes" EntityType="MvcCRUDDBModel.AuditoriaCliente" />
+    <AssociationSet Name="FK_AuditoriaClientes_Clientes" Association="MvcCRUDDBModel.FK_AuditoriaClientes_Clientes">
+      <End Role="Clientes" EntitySet="Clientes1" />
+      <End Role="AuditoriaCliente" EntitySet="AuditoriaClientes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AuditoriaClientes_Usuarios" Association="MvcCRUDDBModel.FK_AuditoriaClientes_Usuarios">
+      <End Role="usuarios" EntitySet="usuarios1" />
+      <End Role="AuditoriaCliente" EntitySet="AuditoriaClientes" />
+    </AssociationSet>
+    <EntitySet Name="Direcciones1" EntityType="MvcCRUDDBModel.Direcciones" />
+    <EntitySet Name="Documentos" EntityType="MvcCRUDDBModel.Documentos" />
+    <AssociationSet Name="FK_Direcciones_Clientes" Association="MvcCRUDDBModel.FK_Direcciones_Clientes">
+      <End Role="Clientes" EntitySet="Clientes1" />
+      <End Role="Direccione" EntitySet="Direcciones1" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Documentos_Clientes" Association="MvcCRUDDBModel.FK_Documentos_Clientes">
+      <End Role="Clientes" EntitySet="Clientes1" />
+      <End Role="Documento" EntitySet="Documentos" />
+    </AssociationSet>
+    <EntitySet Name="sysdiagrams" EntityType="MvcCRUDDBModel.sysdiagram" />
+  </EntityContainer>
+  <EntityType Name="Clientes">
+    <Key>
+      <PropertyRef Name="clienteId" />
+    </Key>
+    <Property Name="clienteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="correo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="telefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="documento" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="direccion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="AuditoriaClientes" Relationship="MvcCRUDDBModel.FK_AuditoriaClientes_Clientes" FromRole="Clientes" ToRole="AuditoriaCliente" />
+    <NavigationProperty Name="Direcciones" Relationship="MvcCRUDDBModel.FK_Direcciones_Clientes" FromRole="Clientes" ToRole="Direccione" />
+    <NavigationProperty Name="Documentos" Relationship="MvcCRUDDBModel.FK_Documentos_Clientes" FromRole="Clientes" ToRole="Documento" />
+  </EntityType>
+  <EntityType Name="usuarios">
+    <Key>
+      <PropertyRef Name="usuarioId" />
+    </Key>
+    <Property Name="usuarioId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="correo" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="user_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="clave" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AuditoriaClientes" Relationship="MvcCRUDDBModel.FK_AuditoriaClientes_Usuarios" FromRole="usuarios" ToRole="AuditoriaCliente" />
+  </EntityType>
+  <EntityType Name="AuditoriaCliente">
+    <Key>
+      <PropertyRef Name="AuditoriaId" />
+    </Key>
+    <Property Name="AuditoriaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ClienteId" Type="Int32" Nullable="false" />
+    <Property Name="CampoModificado" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ValorAnterior" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ValorNuevo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="FechaModificacion" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="cliente" Relationship="MvcCRUDDBModel.FK_AuditoriaClientes_Clientes" FromRole="AuditoriaCliente" ToRole="Clientes" />
+    <NavigationProperty Name="usuario" Relationship="MvcCRUDDBModel.FK_AuditoriaClientes_Usuarios" FromRole="AuditoriaCliente" ToRole="usuarios" />
+  </EntityType>
+  <Association Name="FK_AuditoriaClientes_Clientes">
+    <End Type="MvcCRUDDBModel.Clientes" Role="Clientes" Multiplicity="1" />
+    <End Type="MvcCRUDDBModel.AuditoriaCliente" Role="AuditoriaCliente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Clientes">
+        <PropertyRef Name="clienteId" />
+      </Principal>
+      <Dependent Role="AuditoriaCliente">
+        <PropertyRef Name="ClienteId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AuditoriaClientes_Usuarios">
+    <End Type="MvcCRUDDBModel.usuarios" Role="usuarios" Multiplicity="1" />
+    <End Type="MvcCRUDDBModel.AuditoriaCliente" Role="AuditoriaCliente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="usuarios">
+        <PropertyRef Name="usuarioId" />
+      </Principal>
+      <Dependent Role="AuditoriaCliente">
+        <PropertyRef Name="UsuarioId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Direcciones">
+    <Key>
+      <PropertyRef Name="DireccionId" />
+    </Key>
+    <Property Name="DireccionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ClienteId" Type="Int32" Nullable="false" />
+    <Property Name="Descripcion_direccion" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="cliente" Relationship="MvcCRUDDBModel.FK_Direcciones_Clientes" FromRole="Direccione" ToRole="Clientes" />
+  </EntityType>
+  <EntityType Name="Documentos">
+    <Key>
+      <PropertyRef Name="DocumentoId" />
+    </Key>
+    <Property Name="DocumentoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ClienteId" Type="Int32" Nullable="false" />
+    <Property Name="TipoDocumento" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NumeroDocumento" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="cliente" Relationship="MvcCRUDDBModel.FK_Documentos_Clientes" FromRole="Documento" ToRole="Clientes" />
+  </EntityType>
+  <Association Name="FK_Direcciones_Clientes">
+    <End Type="MvcCRUDDBModel.Clientes" Role="Clientes" Multiplicity="1" />
+    <End Type="MvcCRUDDBModel.Direcciones" Role="Direccione" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Clientes">
+        <PropertyRef Name="clienteId" />
+      </Principal>
+      <Dependent Role="Direccione">
+        <PropertyRef Name="ClienteId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Documentos_Clientes">
+    <End Type="MvcCRUDDBModel.Clientes" Role="Clientes" Multiplicity="1" />
+    <End Type="MvcCRUDDBModel.Documentos" Role="Documento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Clientes">
+        <PropertyRef Name="clienteId" />
+      </Principal>
+      <Dependent Role="Documento">
+        <PropertyRef Name="ClienteId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+</Schema>

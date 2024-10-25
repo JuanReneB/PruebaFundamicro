@@ -1,0 +1,159 @@
+﻿
+@model dynamic
+@{
+    ViewBag.Title = "Documentación de la API REST";
+}
+
+<div class="container">
+    <h1 class="text-center">Documentación de la API REST</h1>
+    <hr />
+
+    <!-- Panel para Rutas Disponibles -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Rutas Disponibles</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong>GET /api/cliente</strong>
+                    <p>Retorna una lista de todos los clientes.</p>
+                    <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#getClientesExample">Ver Ejemplo</button>
+                    <div id="getClientesExample" class="collapse">
+                        <pre>
+GET /api/cliente HTTP/1.1
+Host: example.com
+
+[
+  {
+    "clienteId": 1,
+    "nombre": "Juan Pérez",
+    "correo": "juan.perez@example.com",
+    "telefono": "5551234",
+    "direccion": "Calle Falsa 123"
+  },
+  {
+    "clienteId": 2,
+    "nombre": "María Gómez",
+    "correo": "maria.gomez@example.com",
+    "telefono": "5555678",
+    "direccion": "Avenida Siempre Viva 742"
+  }
+]
+                        </pre>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <strong>GET /api/cliente/{id}</strong>
+                    <p>Retorna la información de un cliente específico por ID.</p>
+                    <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#getClienteByIdExample">Ver Ejemplo</button>
+                    <div id="getClienteByIdExample" class="collapse">
+                        <pre>
+GET /api/cliente/1 HTTP/1.1
+Host: example.com
+
+{
+  "clienteId": 1,
+  "nombre": "Juan Pérez",
+  "correo": "juan.perez@example.com",
+  "telefono": "5551234",
+  "direccion": "Calle Falsa 123"
+}
+                        </pre>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <strong>POST /api/cliente</strong>
+                    <p>Agrega un nuevo cliente.</p>
+                    <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#postClienteExample">Ver Ejemplo</button>
+                    <div id="postClienteExample" class="collapse">
+                        <pre>
+POST /api/cliente HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{
+    "nombre": "Juan Ayala",
+    "correo": "juan.perez@example.com",
+    "telefono": "12345678",
+    "documento": "12345678",
+    "direccion": "Calle Falsa 123"
+}
+
+
+HTTP/1.1 201 Created
+Location: /api/cliente/3
+                        </pre>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <strong>PUT /api/cliente/{id}</strong>
+                    <p>Actualiza un cliente existente por ID.</p>
+                    <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#putClienteExample">Ver Ejemplo</button>
+                    <div id="putClienteExample" class="collapse">
+                        <pre>
+PUT /api/cliente/1 HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{
+  "nombre": "Juan Pérez",
+  "correo": "juan.perez@nuevoemail.com",
+  "telefono": "5551234",
+  "direccion": "Calle Actualizada 789"
+}
+
+HTTP/1.1 200 OK
+                        </pre>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <strong>DELETE /api/cliente/{id}</strong>
+                    <p>Elimina un cliente por ID.</p>
+                    <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#deleteClienteExample">Ver Ejemplo</button>
+                    <div id="deleteClienteExample" class="collapse">
+                        <pre>
+DELETE /api/cliente/1 HTTP/1.1
+Host: example.com
+
+HTTP/1.1 200 OK
+                        </pre>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Panel para Ejemplo de Respuesta -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Ejemplo de Respuesta</h3>
+        </div>
+        <div class="panel-body">
+            <pre>
+{
+  "clienteId": 1,
+  "nombre": "Juan Pérez",
+  "correo": "juan.perez@example.com",
+  "telefono": "5551234",
+  "direccion": "Calle Falsa 123"
+}
+            </pre>
+        </div>
+    </div>
+
+    <!-- Panel para Autenticación -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Autenticación</h3>
+        </div>
+        <div class="panel-body">
+            <p>Actualmente, la API no requiere autenticación basada en sesión.</p>
+        </div>
+    </div>
+
+</div>

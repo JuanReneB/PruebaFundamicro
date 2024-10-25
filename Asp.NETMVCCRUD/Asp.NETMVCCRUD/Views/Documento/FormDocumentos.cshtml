@@ -1,0 +1,184 @@
+﻿@model Asp.NETMVCCRUD.Models.viewModels.ClienteDocumentoViewModel
+
+@{
+    Layout = null;
+}
+<fieldset>
+    <legend> Detalle de Documentos: <span class="pull-right">ID: <strong>@Model.ClienteId</strong></span> </legend>
+
+
+    @Html.Hidden("ClienteId", Model.ClienteId)  <!-- Establece un nombre específico para el campo oculto -->
+    <!-- Campo para mostrar el nombre del cliente -->
+    <!-- Columna para el Nombre del Cliente -->
+    <div class="col-md-12 col-sm-12">
+        <div class="form-group">
+            <label>Nombre del Cliente</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" value="@Model.NombreCompleto" readonly />
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna para la Dirección Principal -->
+    <div class="col-md-12 col-sm-12">
+        <div class="form-group">
+            @Html.Label("Documento Principal:", new { @class = "control-label" })
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-id-card"></i></span>
+                <input type="text" class="form-control" name="DocumentoPrincipal" value="@Model.NumeroDocumento" readonly/>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 col-sm-12">
+        <a class="btn btn-success" style="margin-bottom:10px; color:white" onclick="PopupFormDoc('@Url.Action("AddOrEdit","Documento")')"><i class="fa fa-plus"></i> Add New Documento</a>
+        <table id="documentoTable" class="table table-striped table-bordered table-hover" style="width:100%">
+            <thead class="bg-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo Documento</th>
+                    <th>Número Documento</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+
+</fieldset>
+
+
+<script>
+        var dataTableDocumento,popupDoc;
+        $(document).ready(function () {
+            dataTableDocumento = $("#documentoTable").DataTable({
+                "ajax": {
+                    "url": "/Documento/GetData",
+                    "type": "GET",
+                    "datatype": "json",
+                    "data": function (d) {
+                        // Aquí puedes agregar parámetros adicionales
+                        d.clienteId = $("#ClienteId").val(); // Suponiendo que tienes un input con ese ID
+                    }
+                },
+                "order": [[0, "desc"]],
+                "columns": [
+                    { "data": "DocumentoId", "visible": false }, // Ocultar la columna de clienteId
+                    { "data": "TipoDocumento" },
+                    { "data": "NumeroDocumento" },
+                    {
+                        "data":"DocumentoId" , "render" : function (data) {
+                        return "<a class='btn btn-default btn-sm' title='Editar registro' onclick=PopupFormDoc('@Url.Action("AddOrEdit","Documento")/" + data + "')><i class='fa fa-pencil'></i> Edit</a><a class='btn btn-danger btn-sm' title='Eliminar registro' style='margin-left:5px;color:white' onclick=DeleteDoc("+data+")><i class='fa fa-trash'></i> Delete</a>";
+                    },
+                        "orderable": false,
+                        "searchable":false,
+                        "width":"150px"
+                    }
+
+                ],
+                "language": {
+
+                    "emptyTable" : "No data found, Please click on <b>Add New</b> Button"
+                }
+            });
+
+
+        });
+
+
+        function PopupFormDoc(url) {
+            // Verificar si el Popup ya está abierto
+            if (popupDoc && popupDoc.is(':visible')) {
+                return; // No hacer nada si el popup ya está visible
+            }
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    popupDoc = formDiv.dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        modal:true,
+                        title: 'Registrar Nuevo Documento',
+                        height: 300,
+                        width: 700,
+
+                        close: function () {
+                            popupDoc.dialog('destroy').remove();
+                        }
+
+                    });
+                });
+        }
+
+
+        function SubmitFormDoc(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                // Serializar el formulario a un array de objetos
+                var formData = $(form).serializeArray(); // Serializa el formulario a un array de objetos
+
+                // Buscar el campo ClienteId en formData
+                var clienteIdItem = formData.find(item => item.name === 'ClienteId');
+                var clienteIdValue = clienteIdItem ? clienteIdItem.value : 0; // Obtener el valor de ClienteId o establecer en 0 si no existe
+
+                // Verificar si ClienteId es 0
+                if (clienteIdValue == 0) {
+                    // Si ClienteId es 0, asignar directamente el valor del nuevo parámetro a ClienteId
+                    var nuevoParametroValue = $('#ClienteId').val(); // Reemplaza esto con el valor real del nuevo parámetro
+                    clienteIdItem.value = nuevoParametroValue; // Asignar el nuevo valor directamente a ClienteId
+                }
+
+                // Convertir formData de vuelta a una cadena de parámetros
+                var serializedData = $.param(formData);
+
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: serializedData, // Utilizar la cadena de parámetros
+                    success: function (data) {
+                     /*   console.log(data);*/
+                        if (data.success) {
+                            popupDoc.dialog('close');
+                            dataTableDocumento.ajax.reload();
+
+                            $.notify(data.message, {
+                                globalPosition: "top right",
+                                className: "success"
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+
+          function DeleteDoc(id) {
+            if(confirm('Are You Sure to Delete this Docs Record ?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete","Documento")/' + id,
+                    success: function (data) {
+                        if (data.success)
+                        {
+                            dataTableDireccion.ajax.reload();
+
+                            $.notify(data.message, {
+                                globalPosition: "top right",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
+
+</script>
+
+

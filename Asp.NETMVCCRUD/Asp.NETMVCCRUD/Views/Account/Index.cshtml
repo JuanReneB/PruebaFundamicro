@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Iniciar Sesión";
+    var returnUrl = Request.QueryString["returnUrl"];
+    if (User.Identity.IsAuthenticated)
+    {
+        // Redirigir a una acción en un controlador específico, como "Home/Index"
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+
+<h2>Iniciar Sesión</h2>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <!-- La columna toma la mitad del ancho y se centra -->
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+
+            @Html.Hidden("returnUrl", returnUrl) <!-- Asignar el returnUrl al campo oculto -->
+            <div class="form-group">
+                @Html.Label("Usuario", new { @class = "control-label" }) <!-- Etiqueta para el campo de usuario -->
+                <div class="input-group">
+                    <!-- Agrupación para icono y textbox -->
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span> <!-- Icono para usuario -->
+                    @Html.TextBox("username", null, new { @class = "form-control", placeholder = "Ingrese su usuario", autocomplete = "off" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Contraseña", new { @class = "control-label" }) <!-- Etiqueta para el campo de contraseña -->
+                <div class="input-group">
+                    <!-- Agrupación para icono y password -->
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span> <!-- Icono para contraseña -->
+                    @Html.Password("password", null, new { @class = "form-control", placeholder = "Ingrese su contraseña", autocomplete = "off" })
+
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button> <!-- Botón que ocupa el ancho completo -->
+            <hr />
+            @* Aquí eliminamos el "@" innecesario en la condición *@
+            if (!string.IsNullOrEmpty(ViewBag.Message as string))
+            {
+                <div class="alert alert-danger">
+                    <i class="fa fa-exclamation-circle"></i> @ViewBag.Message
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <div class="container body-content">
+        <!-- Menú de navegación -->
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">WEB ASP.NET</a>
+                </div>
+
+                <!-- Collect the nav links for toggling -->
+                <!-- Menú de navegación -->
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+
+
+
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")">
+                                <a href='@Url.Action("Index", "Home")'><i class="fa fa-home"></i> Inicio <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Cliente" ? "active" : "")">
+                                <a href='@Url.Action("Index", "Cliente")'><i class="fa fa-users"></i> Clientes</a>
+                            </li>
+
+                            <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AuditoriaCliente" ? "active" : "")">
+                                <a href='@Url.Action("Index", "AuditoriaCliente")'><i class="fa fa-search-plus"></i> Auditoría</a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Usuario" ? "active" : "")">
+                                <a href='@Url.Action("Index", "Usuario")'><i class="fa fa-user"></i> Usuarios</a>
+                            </li>
+
+                        }
+
+                        <!-- Opción de API REST siempre visible -->
+                        <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Documentacion" ? "active" : "")">
+                            <a href='@Url.Action("Index", "Documentacion")'><i class="fa fa-cutlery"></i> API REST <i class="fa fa-file-text-o"></i><span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li><a href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-in"></i> Cerrar Sesión</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="@Url.Action("Index", "Account")"><i class="fa fa-sign-in"></i> Iniciar Sesión</a></li>
+                        }
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+
+            </div><!-- /.container-fluid -->
+</nav>
+
+        <!-- Contenido principal -->
+        @RenderBody()
+
+        <hr />
+        <footer>
+            <ul>
+                <li>Desarrollar un sistema para el registro de clientes, donde se guarden los datos generales y permita tener más de una dirección o documento de identificación. La cantidad de tipos de documentos y direcciones quedará a discreción de quien ingresa la información.</li>
+                <li>Se requiere:</li>
+                <ul>
+                    <li>1. Inicio de sesión para los usuarios administradores de los clientes.</li>
+                    <li>2. Pantalla donde permita la administración de los clientes.</li>
+                    <li>3. Servicio REST para consumir desde aplicaciones externas la información de los clientes.</li>
+                    <li>4. Auditoría en los cambios que se realicen sobre la información de los clientes.</li>
+                    <li>5. Reporte de los clientes en archivo de texto (CSV o TXT) generado desde un script.</li>
+                </ul>
+                <li>Una vez finalizado el proyecto, subir los cambios a un repositorio Git público.</li>
+            </ul>
+
+            <p>Asp.Net MVC Proyecto Web</p>
+        </footer>
+    </div>
+
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/notify.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

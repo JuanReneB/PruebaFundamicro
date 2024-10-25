@@ -1,0 +1,64 @@
+﻿@model Asp.NETMVCCRUD.Models.Clientes
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("AddOrEdit", "Cliente", FormMethod.Post, new { onsubmit = "return SubmitForm(this)", autocomplete = "off" }))
+{
+    @Html.HiddenFor(model => model.clienteId)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.nombre, new { @class = "control-label", @style = "text-transform: capitalize;" })
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese su nombre", type = "text" } })
+        </div>
+        @Html.ValidationMessageFor(model => model.nombre)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Correo:", new { @class = "control-label" }) <!-- Modificado para agregar ':' -->
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+            @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese su correo", type = "email" } })
+        </div>
+        @Html.ValidationMessageFor(model => model.correo)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Teléfono:", new { @class = "control-label" }) <!-- Modificado para agregar ':' -->
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+            @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese su teléfono", type = "tel" } })
+        </div>
+        @Html.ValidationMessageFor(model => model.telefono)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Documento:", new { @class = "control-label" }) <!-- Modificado para agregar ':' -->
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-id-card"></i></span>
+            @Html.EditorFor(model => model.documento, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese su documento", type = "text" } })
+        </div>
+        @Html.ValidationMessageFor(model => model.documento)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Dirección:", new { @class = "control-label" }) <!-- Modificado para agregar ':' -->
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+            @Html.TextAreaFor(model => model.direccion, new { @class = "form-control", placeholder = "Ingrese su dirección", rows = 3 })
+        </div>
+        @Html.ValidationMessageFor(model => model.direccion)
+    </div>
+
+    <div class="modal-footer">
+        <div class="text-end">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                <input type="reset" value="Restablecer" class="btn btn-secondary" />
+            </div>
+
+        </div>
+    </div>
+}

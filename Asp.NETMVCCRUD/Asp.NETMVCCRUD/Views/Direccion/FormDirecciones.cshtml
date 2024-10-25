@@ -1,0 +1,183 @@
+﻿@model Asp.NETMVCCRUD.Models.viewModels.ClienteDireccionViewModel
+
+@{
+    Layout = null;
+}
+<fieldset>
+    <legend> Detalle de Direcciones: <span class="pull-right">ID: <strong>@Model.ClienteId</strong></span> </legend>
+
+
+    @Html.Hidden("ClienteId", Model.ClienteId)  <!-- Establece un nombre específico para el campo oculto -->
+    <!-- Campo para mostrar el nombre del cliente -->
+    <!-- Columna para el Nombre del Cliente -->
+    <div class="col-md-12 col-sm-12">
+        <div class="form-group">
+            <label>Nombre del Cliente</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" value="@Model.NombreCompleto" readonly />
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna para la Dirección Principal -->
+    <div class="col-md-12 col-sm-12">
+        <div class="form-group">
+            @Html.Label("Dirección Principal:", new { @class = "control-label" })
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+                <textarea class="form-control" name="DireccionPrincipal" readonly >@Model.DirecionPrincipal</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 col-sm-12">
+        <a class="btn btn-success" style="margin-bottom:10px; color:white" onclick="PopupFormDir('@Url.Action("AddOrEdit","Direccion")')"><i class="fa fa-plus"></i> Add New Dirección</a>
+        <table id="direccionTable" class="table table-striped table-bordered table-hover" style="width:100%">
+            <thead class="bg-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Dirección</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+
+</fieldset>
+
+
+<script>
+        var dataTableDireccion,popupDir;
+        $(document).ready(function () {
+            dataTableDireccion = $("#direccionTable").DataTable({
+                "ajax": {
+                    "url": "/Direccion/GetData",
+                    "type": "GET",
+                    "datatype": "json",
+                    "data": function (d) {
+                        // Aquí puedes agregar parámetros adicionales
+                        d.clienteId = $("#ClienteId").val(); // Suponiendo que tienes un input con ese ID
+                    }
+                },
+                "order": [[0, "desc"]],
+                "columns": [
+                    { "data": "DireccionId", "visible": false }, // Ocultar la columna de clienteId
+                    { "data": "Descripcion_direccion" },
+
+                    {
+                        "data":"DireccionId" , "render" : function (data) {
+                        return "<a class='btn btn-default btn-sm' title='Editar registro' onclick=PopupFormDir('@Url.Action("AddOrEdit","Direccion")/" + data + "')><i class='fa fa-pencil'></i> Edit</a><a class='btn btn-danger btn-sm' title='Eliminar registro' style='margin-left:5px;color:white' onclick=DeleteDir("+data+")><i class='fa fa-trash'></i> Delete</a>";
+                    },
+                        "orderable": false,
+                        "searchable":false,
+                        "width":"150px"
+                    }
+
+                ],
+                "language": {
+
+                    "emptyTable" : "No data found, Please click on <b>Add New</b> Button"
+                }
+            });
+
+
+        });
+
+
+        function PopupFormDir(url) {
+            // Verificar si el Popup ya está abierto
+            if (popupDir && popupDir.is(':visible')) {
+                return; // No hacer nada si el popup ya está visible
+            }
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    popupDir = formDiv.dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        modal:true,
+                        title: 'Registrar Nueva Dirección',
+                        height: 250,
+                        width: 700,
+
+                        close: function () {
+                            popupDir.dialog('destroy').remove();
+                        }
+
+                    });
+                });
+        }
+
+
+        function SubmitFormDir(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                // Serializar el formulario a un array de objetos
+                var formData = $(form).serializeArray(); // Serializa el formulario a un array de objetos
+
+                // Buscar el campo ClienteId en formData
+                var clienteIdItem = formData.find(item => item.name === 'ClienteId');
+                var clienteIdValue = clienteIdItem ? clienteIdItem.value : 0; // Obtener el valor de ClienteId o establecer en 0 si no existe
+
+                // Verificar si ClienteId es 0
+                if (clienteIdValue == 0) {
+                    // Si ClienteId es 0, asignar directamente el valor del nuevo parámetro a ClienteId
+                    var nuevoParametroValue = $('#ClienteId').val(); // Reemplaza esto con el valor real del nuevo parámetro
+                    clienteIdItem.value = nuevoParametroValue; // Asignar el nuevo valor directamente a ClienteId
+                }
+
+                // Convertir formData de vuelta a una cadena de parámetros
+                var serializedData = $.param(formData);
+
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: serializedData, // Utilizar la cadena de parámetros
+                    success: function (data) {
+                     /*   console.log(data);*/
+                        if (data.success) {
+                            popupDir.dialog('close');
+                            dataTableDireccion.ajax.reload();
+
+                            $.notify(data.message, {
+                                globalPosition: "top right",
+                                className: "success"
+                            });
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+
+          function DeleteDir(id) {
+            if(confirm('Are You Sure to Delete this Address Record ?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete","Direccion")/' + id,
+                    success: function (data) {
+                        if (data.success)
+                        {
+                            dataTableDireccion.ajax.reload();
+
+                            $.notify(data.message, {
+                                globalPosition: "top right",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
+
+</script>  
+
+  

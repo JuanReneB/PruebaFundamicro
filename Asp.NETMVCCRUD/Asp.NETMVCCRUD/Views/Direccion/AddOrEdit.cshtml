@@ -1,0 +1,32 @@
+﻿@model Asp.NETMVCCRUD.Models.Direcciones
+
+@{
+    Layout = null;
+}
+
+
+@using (Html.BeginForm("AddOrEdit", "Direccion", FormMethod.Post, new { onsubmit = "return SubmitFormDir(this)", autocomplete = "off" }))
+{
+    @Html.HiddenFor(model => model.DireccionId)
+    @Html.HiddenFor(model => model.ClienteId)
+
+    <div class="form-group">
+        @Html.Label("Nueva Dirección:", new { @class = "control-label" }) <!-- Modificado para agregar ':' -->
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+            @Html.TextAreaFor(model => model.Descripcion_direccion, new { @class = "form-control", placeholder = "Ingrese su dirección", rows = 3 })
+        </div>
+        @Html.ValidationMessageFor(model => model.Descripcion_direccion)
+    </div>
+
+
+    <div class="modal-footer">
+        <div class="text-end">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                <input type="reset" value="Restablecer" class="btn btn-secondary" />
+            </div>
+
+        </div>
+    </div>
+}
